@@ -1,10 +1,18 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 
-public class Lexico 
+public class Lexico
 {
     public static void AnalisadorLexico(String filePath)
     {
+        TabelaSimbolo x = new TabelaSimbolo();
+         HashSet<TabelaSimbolo> tabelaSimbolo = new HashSet<>
+         (Arrays.asList(x));
+        
         try 
         {
             FileReader fileReader = new FileReader(filePath);
