@@ -45,12 +45,14 @@ public class Lexical
         return symbolsTable;
     }
 
-    public static void LexicalAnalysis(String filePath)
+    public static void Analysis(String filePath)
     {
         Map<String, Simbolo> symbolsTable = CreateTable();
-        
+        Simbolo symbol;
+
         int currentByte;
         int nextByte;
+        String lexeme = "";
         boolean isComment = false;
 
         try 
@@ -62,6 +64,9 @@ public class Lexical
             {
                 currentByte = reader.read();
 
+                System.out.println((char) currentByte);
+                
+                // region Verifica comentários
                 if(currentByte == '/')
                 {
                     reader.mark(1);
@@ -90,7 +95,7 @@ public class Lexical
 
                         if(nextByte == '/')
                         {
-                            isComment = true;
+                            isComment = false;
                         }
                         else
                         {
@@ -100,6 +105,36 @@ public class Lexical
 
                     continue;
                 }
+                // endregion
+
+                // region Verifica se encontrou espaços em branco 
+                if(Character.isWhitespace(currentByte))
+                {
+                    if(!lexeme.isEmpty())
+                    {
+                        System.out.println("Lexema: " + lexeme);
+                        if((lexeme.startsWith("\"") && lexeme.endsWith("\"")) || lexeme.matches("\\d+"))
+                        {
+                            symbol = new Simbolo("CONTS", "2", lexeme);
+                        }
+                        else
+                        {
+                            symbol = new Simbolo("ID", "1", lexeme);
+                        }
+
+                        if(!symbolsTable.containsKey(lexeme)) 
+                        {
+                            symbolsTable.put(lexeme, symbol);
+                        }
+
+                        lexeme = "";
+                    }
+
+                    continue;
+                }
+                // endregion
+
+                lexeme += currentByte;
             }
             while(currentByte != -1);
 
