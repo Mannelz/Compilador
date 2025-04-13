@@ -1,4 +1,5 @@
-class TabelaSimbolo {
+class Simbolo 
+{
     String nome;
     String token;
     String lexema;
@@ -6,10 +7,8 @@ class TabelaSimbolo {
     String tipo;
     String endereco;
 
-    TabelaSimbolo(){
-    }
-
-    TabelaSimbolo(String nome, String token, String lexema) {
+    Simbolo(String nome, String token, String lexema) 
+    {
         this.nome = nome;
         this.token = token;
         this.lexema = lexema;
