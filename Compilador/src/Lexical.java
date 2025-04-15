@@ -159,4 +159,15 @@ public class Lexical
 
         return symbolsTable;
     }
+
+    public static boolean IsSimbol(int currentByte)
+    {
+        switch(currentByte)
+        {
+            case '=', '(', ')', '<', '>', ',', '+', '-', '*', '/', ';':
+                return true;
+            default:
+                return false;
+        }
+    }
 }
