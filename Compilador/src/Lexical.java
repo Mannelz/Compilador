@@ -23,8 +23,6 @@ public class Lexical
             do
             {
                 currentByte = reader.read();
-
-                System.out.println((char) currentByte);
                 
                 // region Verifica comentários
                 if(currentByte == '/')
@@ -81,15 +79,41 @@ public class Lexical
                 }
                 // endregion
 
-                // region Verifica se encontrou espaços em branco 
-                if(Character.isWhitespace(currentByte))
+                // region Cria Lexemas 
+                if(currentByte == '"')
                 {
-                    if(!lexeme.isEmpty())
+                    lexeme += (char) currentByte;
+
+                    do
                     {
-                        System.out.println("Lexema: " + lexeme);
-                        if((lexeme.startsWith("\"") && lexeme.endsWith("\"")) || lexeme.matches("\\d+"))
+                        currentByte = reader.read();
+                        lexeme += (char) currentByte;
+                    }
+                    while(currentByte != '"');
+
+                    lexeme = lexeme.substring(1, lexeme.length() - 1);
+
+                    symbol = new Simbolo("CONTS", "2", lexeme);
+
+                    if(!symbolsTable.containsKey(lexeme)) 
+                    {
+                        symbolsTable.put(lexeme, symbol);
+                    }
+
+                    lexeme = "";
+                }
+                 
+                if(!Character.isWhitespace(currentByte) && !IsSimbol(currentByte))
+                {
+                    lexeme += (char) currentByte;
+                }
+                else
+                {
+                    if (!lexeme.isEmpty()) 
+                    {
+                        if(lexeme.matches("\\d+"))
                         {
-                            symbol = new Simbolo("CONTS", "2", lexeme);
+                            symbol = new Simbolo("CONST", "2", lexeme);
                         }
                         else
                         {
@@ -100,15 +124,11 @@ public class Lexical
                         {
                             symbolsTable.put(lexeme, symbol);
                         }
-
-                        lexeme = "";
                     }
 
-                    continue;
+                    lexeme = "";
                 }
                 // endregion
-
-                lexeme += currentByte;
             }
             while(currentByte != -1);
 
