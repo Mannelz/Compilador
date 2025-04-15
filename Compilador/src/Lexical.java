@@ -33,8 +33,6 @@ public class Lexical
 
                     nextByte = reader.read();
 
-                    System.out.println((char) nextByte);
-
                     if(nextByte == '*')
                     {
                         isComment = true;
@@ -47,6 +45,13 @@ public class Lexical
                     }
                 }
 
+                if (currentByte == '{') 
+                {
+                    isComment = true;
+
+                    continue;
+                }
+
                 if(isComment)
                 {
                     if(currentByte == '*')
@@ -56,11 +61,20 @@ public class Lexical
                         if(nextByte == '/')
                         {
                             isComment = false;
+
+                            continue;
                         }
                         else
                         {
                             reader.reset();
                         }
+                    }
+
+                    if(currentByte == '}')
+                    {
+                        isComment = false;
+
+                        continue;
                     }
 
                     continue;
