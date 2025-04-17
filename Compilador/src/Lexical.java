@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Lexical
@@ -8,7 +10,9 @@ public class Lexical
     public static void Analysis(String filePath)
     {
         Map<String, Simbolo> symbolsTable = CreateTable();
+        List<Token> tokens = new ArrayList<Token>();
         Simbolo symbol;
+        Token token;
 
         int currentByte;
         int nextByte;
@@ -80,6 +84,15 @@ public class Lexical
                 // endregion
 
                 // region Cria Lexemas 
+                
+                
+                
+                if(IsSimbol(currentByte)){
+                    token = new Token(symbolsTable.get(currentByte).nome, Character.toString((char) currentByte));
+                    tokens.add(token);
+                    continue;
+                }
+
                 if(currentByte == '"')
                 {
                     lexeme += (char) currentByte;
@@ -103,7 +116,7 @@ public class Lexical
                     lexeme = "";
                 }
                  
-                if(!Character.isWhitespace(currentByte) && !IsSimbol(currentByte))
+                if(!Character.isWhitespace(currentByte))
                 {
                     lexeme += (char) currentByte;
                 }
