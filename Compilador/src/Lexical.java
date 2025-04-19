@@ -87,6 +87,7 @@ public class Lexical
                 
                 
                 
+                //TALVEZ JA TO VERIFICANDO ISSO LA EMBAIXO
                 if(IsSimbol(currentByte)){
                     token = new Token(symbolsTable.get(currentByte).nome, Character.toString((char) currentByte));
                     tokens.add(token);
@@ -124,19 +125,57 @@ public class Lexical
                 {
                     if (!lexeme.isEmpty()) 
                     {
-                        if(lexeme.matches("\\d+"))
-                        {
-                            symbol = new Simbolo("CONST", "2", lexeme);
-                        }
-                        else
+                        //Verifica ID se não estiver na tabela adiciona
+                        if(lexeme.matches("[a-zA-Z_][a-zA-Z0-9]*"))
                         {
                             symbol = new Simbolo("ID", "1", lexeme);
+                            if (!symbolsTable.containsKey(lexeme)) 
+                            {
+                                symbolsTable.put(lexeme, symbol);
+                            }
+                            
+                            token = new Token("ID", lexeme);
+                            tokens.add(token);
                         }
-
-                        if(!symbolsTable.containsKey(lexeme)) 
+                        // Verifica const se não estiver na tabela adiciona
+                        else if (lexeme.matches("[a-zA-Z0-9]+")) 
                         {
-                            symbolsTable.put(lexeme, symbol);
+                            symbol = new Simbolo("CONST", "2", lexeme);
+                            
+                            if (!symbolsTable.containsKey(lexeme))
+                             {
+                                symbolsTable.put(lexeme, symbol);
+                            }
+                            
+                            token = new Token("CONST", lexeme);
+                            tokens.add(token);
                         }
+                        // Verifica int
+                        else if(lexeme.matches("[+-]?[0-9]+" ))
+                        {
+                            token = new Token("INT", lexeme);
+                            tokens.add(token);
+                        }
+                        // Verifica operador
+                        else if (lexeme.matches("\\+|\\-|\\*|/")) 
+                        {
+                            token = new Token("OPERADOR", lexeme);
+                            tokens.add(token);
+                        }
+                        
+                        // Verifica Hexa
+                        else if (lexeme.matches("0h[0-9A-F]+")) 
+                        {
+                            token = new Token("HEXA", lexeme);
+                            tokens.add(token);
+                        } 
+
+                        else
+                        {
+                            //como vamos tratar se n passar por nenhum???
+                        }    
+
+                        
                     }
 
                     lexeme = "";
