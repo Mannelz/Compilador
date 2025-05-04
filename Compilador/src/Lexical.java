@@ -1,16 +1,12 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class Lexical
 {
     public static void analysis(String filePath)
     {
         SymbolTable symbolsTable = SymbolTable.getInstance();
-        List<Token> tokens = new ArrayList<Token>();
+        TokenList tokens = TokenList.getInstance();
         Simbolo symbol;
         Token token;
 
@@ -134,7 +130,7 @@ public class Lexical
                             }
                             
                             token = new Token("ID", lexeme);
-                            tokens.add(token);
+                            tokens.addToken(token);
                         }
                         // Verifica const se não estiver na tabela adiciona
                         else if (lexeme.matches("[a-zA-Z0-9]+")) 
@@ -147,26 +143,26 @@ public class Lexical
                             }
                             
                             token = new Token("CONST", lexeme);
-                            tokens.add(token);
+                            tokens.addToken(token);
                         }
                         // Verifica int
                         else if(lexeme.matches("[+-]?[0-9]+" ))
                         {
                             token = new Token("INT", lexeme);
-                            tokens.add(token);
+                            tokens.addToken(token);
                         }
                         // Verifica operador
                         else if (lexeme.matches("\\+|\\-|\\*|/")) 
                         {
                             token = new Token("OPERADOR", lexeme);
-                            tokens.add(token);
+                            tokens.addToken(token);
                         }
                         
                         // Verifica Hexa
                         else if (lexeme.matches("0h[0-9A-F]+")) 
                         {
                             token = new Token("HEXA", lexeme);
-                            tokens.add(token);
+                            tokens.addToken(token);
                         } 
 
                         else
