@@ -4,6 +4,6 @@ public class Main
     {
         String filePath = "codigo_fonte.lc";
         
-        Lexical.Analysis(filePath);
+        Lexical.analysis(filePath);
     }
 }
