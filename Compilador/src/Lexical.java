@@ -10,6 +10,8 @@ public class Lexical
         Simbolo symbol;
         Token token;
 
+        int line = 1;
+        int column = 0;
         int currentByte;
         int nextByte;
         String lexeme = "";
@@ -23,6 +25,15 @@ public class Lexical
             do
             {
                 currentByte = reader.read();
+
+                if(currentByte == '\n') 
+                {
+                    line++;
+                    column = 0;
+                } else 
+                {
+                    column++;
+                }
                 
                 // region Verifica comentários
                 if(currentByte == '/')
@@ -106,7 +117,7 @@ public class Lexical
                         }
                         else
                         {
-                            System.out.println("Error: invalid symbol " + simple);
+                            WizardSpeller.castError("Símbolo inválido: " + simple, line, column);
                         }
                     }
 
@@ -120,6 +131,13 @@ public class Lexical
                     do
                     {
                         currentByte = reader.read();
+
+                        if(currentByte == -1 || currentByte == '\n')
+                        {
+                            WizardSpeller.castError("String não terminada com aspas", line, column);
+                            break;
+                        }
+
                         lexeme += (char) currentByte;
                     }
                     while(currentByte != '"');
@@ -162,6 +180,11 @@ public class Lexical
                         }
                         else
                         {
+                            if(!lexeme.matches("[a-zA-Z_][a-zA-Z0-9_]*"))
+                            {
+                                WizardSpeller.castWarning("Identificador inválido ou mal formado: " + lexeme, line, column);
+                            }
+
                             symbol = new Simbolo("ID", "1", lexeme);
                             token = Token.createToken(symbol);
 
@@ -176,11 +199,16 @@ public class Lexical
             }
             while(currentByte != -1);
 
+            if(isComment)
+            {
+                WizardSpeller.castError("Comentário não fechado antes do fim do arquivo", line, column);
+            }
+
             reader.close();
         }
         catch (Exception e) 
         {
-            System.out.println("Error: " + e);
+            WizardSpeller.castError("Erro ao ler o arquivo: " + e.getMessage(), 0, 0);
         }
     }
 
