@@ -13,7 +13,7 @@ public class TokenList
 
     public static TokenList getInstance()
     {
-        if (instance == null)
+        if(instance == null)
             instance = new TokenList();
         
         return instance;

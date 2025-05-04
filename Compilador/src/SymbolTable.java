@@ -14,7 +14,7 @@ public class SymbolTable
 
     public static SymbolTable getInstance()
     {
-        if (instance == null)
+        if(instance == null)
             instance = new SymbolTable();
         
         return instance;
@@ -58,7 +58,7 @@ public class SymbolTable
 
     public void addSymbol(Simbolo symbol)
     {
-        symbolsTable.put(symbol.lexema, symbol);
+        symbolsTable.put(symbol.getLexema(), symbol);
     }
 
     public Simbolo getSymbol(String lexema)

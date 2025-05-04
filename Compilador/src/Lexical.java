@@ -43,7 +43,7 @@ public class Lexical
                     }
                 }
 
-                if (currentByte == '{') 
+                if(currentByte == '{') 
                 {
                     isComment = true;
 
@@ -80,14 +80,38 @@ public class Lexical
                 // endregion
 
                 // region Cria Lexemas 
-                //TALVEZ JA TO VERIFICANDO ISSO LA EMBAIXO
-                /*
-                if(isSimbol(currentByte)){
-                    token = new Token(symbolsTable.getSymbol(currentByte).nome, Character.toString((char) currentByte));
-                    tokens.add(token);
+                if(isSimbol(currentByte))
+                {
+                    reader.mark(1);
+
+                    nextByte = reader.read();
+
+                    String composed = Character.toString((char) currentByte) + (char) nextByte;
+
+                    if(symbolsTable.contains(composed))
+                    {
+                        token = Token.createToken(symbolsTable.getSymbol(composed));
+                        tokens.addToken(token);
+                    }
+                    else
+                    {
+                        reader.reset();
+
+                        String simple = Character.toString((char) currentByte);
+
+                        if(symbolsTable.contains(simple))
+                        {
+                            token = Token.createToken(symbolsTable.getSymbol(simple));
+                            tokens.addToken(token);
+                        }
+                        else
+                        {
+                            System.out.println("Error: invalid symbol " + simple);
+                        }
+                    }
+
                     continue;
                 }
-                */
 
                 if(currentByte == '"')
                 {
@@ -104,12 +128,15 @@ public class Lexical
 
                     symbol = new Simbolo("CONTS", "2", lexeme);
 
-                    if(!symbolsTable.contains(lexeme)) 
-                    {
+                    if(!symbolsTable.contains(lexeme))
                         symbolsTable.addSymbol(symbol);
-                    }
+
+                    token = Token.createToken(symbol);
+                    tokens.addToken(token);
 
                     lexeme = "";
+
+                    continue;
                 }
                  
                 if(!Character.isWhitespace(currentByte))
@@ -118,57 +145,29 @@ public class Lexical
                 }
                 else
                 {
-                    if (!lexeme.isEmpty()) 
+                    if(!lexeme.isEmpty()) 
                     {
-                        //Verifica ID se não estiver na tabela adiciona
-                        if(lexeme.matches("[a-zA-Z_][a-zA-Z0-9]*"))
+                        if(symbolsTable.contains(lexeme))
                         {
-                            symbol = new Simbolo("ID", "1", lexeme);
-                            if (!symbolsTable.contains(lexeme)) 
-                            {
-                                symbolsTable.addSymbol(symbol);
-                            }
-                            
-                            token = new Token("ID", lexeme);
+                            token = Token.createToken(symbolsTable.getSymbol(lexeme));
                             tokens.addToken(token);
                         }
-                        // Verifica const se não estiver na tabela adiciona
-                        else if (lexeme.matches("[a-zA-Z0-9]+")) 
+                        else if(lexeme.matches("\\d+"))
                         {
-                            symbol = new Simbolo("CONST", "2", lexeme);
-                            
-                            if (!symbolsTable.contains(lexeme))
-                            {
-                                symbolsTable.addSymbol(symbol);
-                            }
-                            
-                            token = new Token("CONST", lexeme);
-                            tokens.addToken(token);
-                        }
-                        // Verifica int
-                        else if(lexeme.matches("[+-]?[0-9]+" ))
-                        {
-                            token = new Token("INT", lexeme);
-                            tokens.addToken(token);
-                        }
-                        // Verifica operador
-                        else if (lexeme.matches("\\+|\\-|\\*|/")) 
-                        {
-                            token = new Token("OPERADOR", lexeme);
-                            tokens.addToken(token);
-                        }
-                        
-                        // Verifica Hexa
-                        else if (lexeme.matches("0h[0-9A-F]+")) 
-                        {
-                            token = new Token("HEXA", lexeme);
-                            tokens.addToken(token);
-                        } 
+                            symbol = new Simbolo("CONTS", "2", lexeme);
+                            token = Token.createToken(symbol);
 
+                            symbolsTable.addSymbol(symbol);
+                            tokens.addToken(token);
+                        }
                         else
                         {
-                            //como vamos tratar se n passar por nenhum???
-                        }    
+                            symbol = new Simbolo("ID", "1", lexeme);
+                            token = Token.createToken(symbol);
+
+                            symbolsTable.addSymbol(symbol);
+                            tokens.addToken(token);
+                        }
                     }
 
                     lexeme = "";

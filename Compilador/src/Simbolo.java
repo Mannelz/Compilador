@@ -1,11 +1,11 @@
 class Simbolo 
 {
-    String nome;
-    String token;
-    String lexema;
-    String classe;
-    String tipo;
-    String endereco;
+    private String nome;
+    private String token;
+    private String lexema;
+    private String classe;
+    private String tipo;
+    private String endereco;
 
     Simbolo(String nome, String token, String lexema) 
     {
@@ -17,27 +17,48 @@ class Simbolo
         this.endereco = "";
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public String getNome()
+    {
+        return nome;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public String getToken()
+    {
+        return token;
     }
 
-    public void setLexema(String lexema) {
-        this.lexema = lexema;
+    public String getLexema()
+    {
+        return lexema;
     }
 
-    public void setClasse(String classe) {
+    public String getClasse()
+    {
+        return classe;
+    }
+
+    public String getTipo()
+    {
+        return tipo;
+    }
+
+    public String getEndereco()
+    {
+        return endereco;
+    }
+
+    public void setClasse(String classe)
+    {
         this.classe = classe;
     }
 
-    public void setTipo(String tipo) {
+    public void setTipo(String tipo)
+    {
         this.tipo = tipo;
     }
 
-    public void setEndereco(String endereco) {
+    public void setEndereco(String endereco)
+    {
         this.endereco = endereco;
     }
 }
