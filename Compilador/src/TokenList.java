@@ -1,14 +1,15 @@
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+import java.util.Queue;
 
 public class TokenList
 {
     private static TokenList instance = null;
-    List<Token> tokens;
+    Queue<Token> tokens;
+
 
     private TokenList()
     {
-        this.tokens = new ArrayList<>();
+        this.tokens = new LinkedList<>();
     }
 
     public static TokenList getInstance()
@@ -22,5 +23,15 @@ public class TokenList
     public void addToken(Token token)
     {
         tokens.add(token);
+    }
+
+    public Token getToken()
+    {
+        return tokens.poll();
+    }
+
+    public boolean isEmpty()
+    {
+        return tokens.isEmpty();
     }
 }
