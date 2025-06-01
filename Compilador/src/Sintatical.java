@@ -7,15 +7,19 @@ public class Sintatical
 
     public static void analysis()
     {
+        boolean isDeclaration;
+
         while(!tokens.isEmpty())
         {
             token = tokens.getToken();
+
+            isDeclaration = token.getTipo().equals("FINAL") || token.getTipo().equals("INT") || token.getTipo().equals("BYTE") || token.getTipo().equals("STRING") || token.getTipo().equals("BOOLEAN");
 
             if(token.getTipo().equals("ID"))
             {
                 assignment();
             }
-            else if(token.getTipo().equals("FINAL") || token.getTipo().equals("INT") || token.getTipo().equals("BYTE") || token.getTipo().equals("STRING") || token.getTipo().equals("BOOLEAN"))
+            else if(isDeclaration)
             {
                 declaration();
             }
@@ -26,6 +30,18 @@ public class Sintatical
             else if(token.getTipo().equals("WRITE") || token.getTipo().equals("WRITELN"))
             {
                 write();
+            }
+            else if(token.getTipo().equals("WHILE"))
+            {
+                loop();
+            }
+            else if(token.getTipo().equals("BEGIN"))
+            {
+                block();
+            }
+            else
+            {
+                WizardSpeller.castError("Não foi possível encontrar nenhum token válido.", 1, 1);
             }
         }
     }
@@ -176,6 +192,64 @@ public class Sintatical
         else
         {
             WizardSpeller.castError("Esperado ',' após 'write'/'writeln'.", 1 ,1);
+        }
+    }
+
+    private static void loop()
+    {
+        token = tokens.getToken();
+
+        expression();
+
+        if(!token.getTipo().equals("BEGIN"))
+        {
+            WizardSpeller.castError("Esperado 'begin' após a condição do while.", 1, 1);
+        }
+        
+        block();
+    }
+
+    private static void block()
+    {
+        token = tokens.getToken();
+
+        while(!token.getTipo().equals("END"))
+        {
+            switch (token.getTipo())
+            {
+                case "ID":
+                    assignment();
+                    break;
+                case "FINAL":
+                case "INT":
+                case "BYTE":
+                case "STRING":
+                case "BOOLEAN":
+                    declaration();
+                    break;
+                case "READLN":
+                    read();
+                    break;
+                case "WRITE":
+                case "WRITELN":
+                    write();
+                    break;
+                case "WHILE":
+                    loop();
+                    break;
+                case "BEGIN":
+                    block();
+                    break;
+                default:
+                    WizardSpeller.castError("Comando inválido dentro de bloco.", 1, 1);
+            }
+
+            token = tokens.getToken();
+
+            if(token == null)
+            {
+                WizardSpeller.castError("Esperado 'end' para fechar o bloco, mas fim do código foi alcançado.", 1, 1);
+            }
         }
     }
 
