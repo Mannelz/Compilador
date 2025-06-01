@@ -11,7 +11,7 @@ public class Sintatical
 
         while(!tokens.isEmpty())
         {
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             isDeclaration = token.getTipo().equals("FINAL") || token.getTipo().equals("INT") || token.getTipo().equals("BYTE") || token.getTipo().equals("STRING") || token.getTipo().equals("BOOLEAN");
 
@@ -48,11 +48,11 @@ public class Sintatical
 
     private static void assignment()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         if(token.getTipo().equals("ATRIB"))
         {
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             expression();
 
@@ -73,11 +73,11 @@ public class Sintatical
 
     private static void declaration()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         if(token.getTipo().equals("ID"))
         {
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             if(token.getTipo().equals("PONTO_VIRG"))
             {
@@ -85,7 +85,7 @@ public class Sintatical
             }
             else if(token.getTipo().equals("ATRIB"))
             {
-                token = tokens.getToken();
+                token = tokens.nextToken();
 
                 expression();
 
@@ -111,15 +111,15 @@ public class Sintatical
 
     private static void read()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         if(token.getTipo().equals("VIRGULA"))
         {
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             if(token.getTipo().equals("ID"))
             {
-                token = tokens.getToken();
+                token = tokens.nextToken();
 
                 if(token.getTipo().equals("PONTO_VIRG"))
                 {
@@ -143,15 +143,15 @@ public class Sintatical
 
     private static void write()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         if(token.getTipo().equals("VIRGULA"))
         {
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             if(token.getTipo().equals("CONST"))
             {
-                token = tokens.getToken();
+                token = tokens.nextToken();
 
                 if(token.getTipo().equals("PONTO_VIRG"))
                 {
@@ -159,11 +159,11 @@ public class Sintatical
                 }
                 else if(token.getTipo().equals("VIRGULA"))
                 {
-                    token = tokens.getToken();
+                    token = tokens.nextToken();
 
                     if(token.getTipo().equals("ID"))
                     {
-                        token = tokens.getToken();
+                        token = tokens.nextToken();
 
                         if(token.getTipo().equals("PONTO_VIRG"))
                         {
@@ -197,7 +197,7 @@ public class Sintatical
 
     private static void loop()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         expression();
 
@@ -211,7 +211,7 @@ public class Sintatical
 
     private static void block()
     {
-        token = tokens.getToken();
+        token = tokens.nextToken();
 
         while(!token.getTipo().equals("END"))
         {
@@ -244,7 +244,7 @@ public class Sintatical
                     WizardSpeller.castError("Comando inválido dentro de bloco.", 1, 1);
             }
 
-            token = tokens.getToken();
+            token = tokens.nextToken();
 
             if(token == null)
             {
@@ -258,16 +258,16 @@ public class Sintatical
         // Primeiro operando
         if(isOperate(token))
         {
-            token = tokens.getToken(); // consome operando
+            token = tokens.nextToken(); // consome operando
         } 
         else if(token.getTipo().equals("ABRE_PAR"))
         {
-            token = tokens.getToken(); // consome '('
+            token = tokens.nextToken(); // consome '('
             expression(); // expressão dentro do parêntese
 
             if(token.getTipo().equals("FECHA_PAR"))
             {
-                token = tokens.getToken(); // consome ')'
+                token = tokens.nextToken(); // consome ')'
             }
             else
             {
@@ -276,7 +276,7 @@ public class Sintatical
         }
         else if(token.getTipo().equals("NOT"))
         {
-            token = tokens.getToken(); // consome 'not'
+            token = tokens.nextToken(); // consome 'not'
             expression(); // negação de expressão
         }
         else
@@ -287,20 +287,20 @@ public class Sintatical
         // Enquanto houver operadores, continue processando a expressão
         while (isOperator(token))
         {
-            token = tokens.getToken(); // consome operador
+            token = tokens.nextToken(); // consome operador
 
             if(isOperate(token))
             {
-                token = tokens.getToken(); // consome operando
+                token = tokens.nextToken(); // consome operando
             }
             else if(token.getTipo().equals("ABRE_PAR"))
             {
-                token = tokens.getToken(); // consome '('
+                token = tokens.nextToken(); // consome '('
                 expression(); // expressão entre parênteses
 
                 if(token.getTipo().equals("FECHA_PAR"))
                 {
-                    token = tokens.getToken(); // consome ')'
+                    token = tokens.nextToken(); // consome ')'
                 }
                 else
                 {

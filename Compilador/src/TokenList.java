@@ -25,7 +25,7 @@ public class TokenList
         tokens.add(token);
     }
 
-    public Token getToken()
+    public Token nextToken()
     {
         return tokens.poll();
     }
