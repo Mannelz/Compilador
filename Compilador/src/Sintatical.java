@@ -237,9 +237,6 @@ public class Sintatical
                 case "WHILE":
                     loop();
                     break;
-                case "IF":
-                    condition();
-                    break;
                 case "BEGIN":
                     block();
                     break;
