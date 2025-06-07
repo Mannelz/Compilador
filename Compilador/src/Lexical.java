@@ -3,25 +3,26 @@ import java.io.FileReader;
 
 public class Lexical
 {
-    public static void analysis(String filePath)
-    {
-        SymbolTable symbolsTable = SymbolTable.getInstance();
-        TokenList tokens = TokenList.getInstance();
-        Symbol symbol;
-        Token token;
+    private static SymbolTable symbolsTable = SymbolTable.getInstance();
+    private static TokenList tokens = TokenList.getInstance();
+    private static Symbol symbol;
+    private static Token token;
 
-        int line = 1;
-        int column = 0;
+    private static int line = 1;
+    private static int column = 0;
+    private static boolean isComment = false;
+
+    public static void analysis(String filePath) throws Exception
+    {
+        FileReader fileReader = new FileReader(filePath);
+        BufferedReader reader = new BufferedReader(fileReader);
+
         int currentByte;
         int nextByte;
         String lexeme = "";
-        boolean isComment = false;
-
+        
         try 
         {
-            FileReader fileReader = new FileReader(filePath);
-            BufferedReader reader = new BufferedReader(fileReader);
-
             do
             {
                 currentByte = reader.read();
@@ -30,7 +31,8 @@ public class Lexical
                 {
                     line++;
                     column = 0;
-                } else 
+                }
+                else 
                 {
                     column++;
                 }
@@ -93,6 +95,12 @@ public class Lexical
                 // region Cria Lexemas 
                 if(isSimbol(currentByte))
                 {
+                    if(!lexeme.isEmpty())
+                    {
+                        processLexeme(lexeme);
+                        lexeme = "";
+                    }
+
                     reader.mark(1);
 
                     nextByte = reader.read();
@@ -126,6 +134,12 @@ public class Lexical
 
                 if(currentByte == '"')
                 {
+                    if(!lexeme.isEmpty())
+                    {
+                        processLexeme(lexeme);
+                        lexeme = "";
+                    }
+                    
                     lexeme += (char) currentByte;
 
                     do
@@ -163,37 +177,11 @@ public class Lexical
                 }
                 else
                 {
-                    if(!lexeme.isEmpty()) 
+                    if(!lexeme.isEmpty())
                     {
-                        if(symbolsTable.contains(lexeme))
-                        {
-                            token = Token.createToken(symbolsTable.getSymbol(lexeme), line, column);
-                            tokens.addToken(token);
-                        }
-                        else if(lexeme.matches("\\d+"))
-                        {
-                            symbol = new Symbol("CONTS", "2", lexeme);
-                            token = Token.createToken(symbol, line, column);
-
-                            symbolsTable.addSymbol(symbol);
-                            tokens.addToken(token);
-                        }
-                        else
-                        {
-                            if(!lexeme.matches("[a-zA-Z_][a-zA-Z0-9_]*"))
-                            {
-                                WizardSpeller.castWarning("Identificador inválido ou mal formado: " + lexeme, line, column);
-                            }
-
-                            symbol = new Symbol("ID", "1", lexeme);
-                            token = Token.createToken(symbol, line, column);
-
-                            symbolsTable.addSymbol(symbol);
-                            tokens.addToken(token);
-                        }
+                        processLexeme(lexeme);
+                        lexeme = "";
                     }
-
-                    lexeme = "";
                 }
                 // endregion
             }
@@ -203,12 +191,43 @@ public class Lexical
             {
                 WizardSpeller.castError("Comentário não fechado antes do fim do arquivo", line, column);
             }
-
-            reader.close();
         }
         catch (Exception e) 
         {
             WizardSpeller.castError("Erro ao ler o arquivo: " + e.getMessage(), 0, 0);
+        }
+        finally
+        {
+            reader.close();
+        }
+    }
+
+    public static void processLexeme(String lexeme)
+    {
+        if(symbolsTable.contains(lexeme))
+        {
+            token = Token.createToken(symbolsTable.getSymbol(lexeme), line, column);
+            tokens.addToken(token);
+        }
+        else if(lexeme.matches("[a-zA-Z_][a-zA-Z0-9]*"))
+        {
+            symbol = new Symbol("ID", "1", lexeme);
+            token = Token.createToken(symbol, line, column);
+
+            symbolsTable.addSymbol(symbol);
+            tokens.addToken(token);
+        }
+        else if(lexeme.matches("\\d+"))
+        {
+            symbol = new Symbol("CONTS", "2", lexeme);
+            token = Token.createToken(symbol, line, column);
+
+            symbolsTable.addSymbol(symbol);
+            tokens.addToken(token);
+        }
+        else
+        {
+            WizardSpeller.castWarning("Lexema não reconhecido: " + lexeme, line, column);
         }
     }
 
