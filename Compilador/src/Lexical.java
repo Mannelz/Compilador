@@ -158,7 +158,7 @@ public class Lexical
 
                     lexeme = lexeme.substring(1, lexeme.length() - 1);
 
-                    symbol = new Symbol("CONTS", "2", lexeme);
+                    symbol = new Symbol("CONST", "2", lexeme);
 
                     if(!symbolsTable.contains(lexeme))
                         symbolsTable.addSymbol(symbol);
@@ -219,7 +219,7 @@ public class Lexical
         }
         else if(lexeme.matches("\\d+"))
         {
-            symbol = new Symbol("CONTS", "2", lexeme);
+            symbol = new Symbol("CONST", "2", lexeme);
             token = Token.createToken(symbol, line, column);
 
             symbolsTable.addSymbol(symbol);
