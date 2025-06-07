@@ -13,9 +13,9 @@ public class Sintatical
         {
             token = tokens.getToken();
 
-            isDeclaration = token.getTipo().equals("FINAL") || token.getTipo().equals("INT") || token.getTipo().equals("BYTE") || token.getTipo().equals("STRING") || token.getTipo().equals("BOOLEAN");
+            isDeclaration = token.getType().equals("FINAL") || token.getType().equals("INT") || token.getType().equals("BYTE") || token.getType().equals("STRING") || token.getType().equals("BOOLEAN");
 
-            if(token.getTipo().equals("ID"))
+            if(token.getType().equals("ID"))
             {
                 assignment();
             }
@@ -23,19 +23,19 @@ public class Sintatical
             {
                 declaration();
             }
-            else if(token.getTipo().equals("READLN"))
+            else if(token.getType().equals("READLN"))
             {
                 read();
             }
-            else if(token.getTipo().equals("WRITE") || token.getTipo().equals("WRITELN"))
+            else if(token.getType().equals("WRITE") || token.getType().equals("WRITELN"))
             {
                 write();
             }
-            else if(token.getTipo().equals("WHILE"))
+            else if(token.getType().equals("WHILE"))
             {
                 loop();
             }
-            else if(token.getTipo().equals("BEGIN"))
+            else if(token.getType().equals("BEGIN"))
             {
                 block();
             }
@@ -50,13 +50,13 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        if(token.getTipo().equals("ATRIB"))
+        if(token.getType().equals("ATRIB"))
         {
             token = tokens.getToken();
 
             expression();
 
-            if(token.getTipo().equals("PONTO_VIRG"))
+            if(token.getType().equals("PONTO_VIRG"))
             {
                 // Análise semântica aqui.
             }
@@ -75,21 +75,21 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        if(token.getTipo().equals("ID"))
+        if(token.getType().equals("ID"))
         {
             token = tokens.getToken();
 
-            if(token.getTipo().equals("PONTO_VIRG"))
+            if(token.getType().equals("PONTO_VIRG"))
             {
                 // Análise semântica aqui.
             }
-            else if(token.getTipo().equals("ATRIB"))
+            else if(token.getType().equals("ATRIB"))
             {
                 token = tokens.getToken();
 
                 expression();
 
-                if(token.getTipo().equals("PONTO_VIRG"))
+                if(token.getType().equals("PONTO_VIRG"))
                 {
                     // Análise semântica aqui.
                 }
@@ -113,15 +113,15 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        if(token.getTipo().equals("VIRGULA"))
+        if(token.getType().equals("VIRGULA"))
         {
             token = tokens.getToken();
 
-            if(token.getTipo().equals("ID"))
+            if(token.getType().equals("ID"))
             {
                 token = tokens.getToken();
 
-                if(token.getTipo().equals("PONTO_VIRG"))
+                if(token.getType().equals("PONTO_VIRG"))
                 {
                     // Análise semântica aqui.
                 }
@@ -145,27 +145,27 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        if(token.getTipo().equals("VIRGULA"))
+        if(token.getType().equals("VIRGULA"))
         {
             token = tokens.getToken();
 
-            if(token.getTipo().equals("CONST"))
+            if(token.getType().equals("CONST"))
             {
                 token = tokens.getToken();
 
-                if(token.getTipo().equals("PONTO_VIRG"))
+                if(token.getType().equals("PONTO_VIRG"))
                 {
                     // Análise semântica aqui.
                 }
-                else if(token.getTipo().equals("VIRGULA"))
+                else if(token.getType().equals("VIRGULA"))
                 {
                     token = tokens.getToken();
 
-                    if(token.getTipo().equals("ID"))
+                    if(token.getType().equals("ID"))
                     {
                         token = tokens.getToken();
 
-                        if(token.getTipo().equals("PONTO_VIRG"))
+                        if(token.getType().equals("PONTO_VIRG"))
                         {
                             // Análise semântica aqui.
                         }
@@ -201,7 +201,7 @@ public class Sintatical
 
         expression();
 
-        if(!token.getTipo().equals("BEGIN"))
+        if(!token.getType().equals("BEGIN"))
         {
             WizardSpeller.castError("Esperado 'begin' após a condição do while.", 1, 1);
         }
@@ -213,9 +213,9 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        while(!token.getTipo().equals("END"))
+        while(!token.getType().equals("END"))
         {
-            switch (token.getTipo())
+            switch (token.getType())
             {
                 case "ID":
                     assignment();
@@ -260,12 +260,12 @@ public class Sintatical
         {
             token = tokens.getToken(); // consome operando
         } 
-        else if(token.getTipo().equals("ABRE_PAR"))
+        else if(token.getType().equals("ABRE_PAR"))
         {
             token = tokens.getToken(); // consome '('
             expression(); // expressão dentro do parêntese
 
-            if(token.getTipo().equals("FECHA_PAR"))
+            if(token.getType().equals("FECHA_PAR"))
             {
                 token = tokens.getToken(); // consome ')'
             }
@@ -274,7 +274,7 @@ public class Sintatical
                 WizardSpeller.castError("Esperado ')'.", 1, 1);
             }
         }
-        else if(token.getTipo().equals("NOT"))
+        else if(token.getType().equals("NOT"))
         {
             token = tokens.getToken(); // consome 'not'
             expression(); // negação de expressão
@@ -293,12 +293,12 @@ public class Sintatical
             {
                 token = tokens.getToken(); // consome operando
             }
-            else if(token.getTipo().equals("ABRE_PAR"))
+            else if(token.getType().equals("ABRE_PAR"))
             {
                 token = tokens.getToken(); // consome '('
                 expression(); // expressão entre parênteses
 
-                if(token.getTipo().equals("FECHA_PAR"))
+                if(token.getType().equals("FECHA_PAR"))
                 {
                     token = tokens.getToken(); // consome ')'
                 }
@@ -316,24 +316,24 @@ public class Sintatical
 
     private static boolean isOperate(Token token)
     {
-        return token.getTipo().equals("ID") ||
-            token.getTipo().equals("CONST") ||
-            token.getTipo().equals("TRUE") ||
-            token.getTipo().equals("FALSE");
+        return token.getType().equals("ID") ||
+            token.getType().equals("CONST") ||
+            token.getType().equals("TRUE") ||
+            token.getType().equals("FALSE");
     }
 
     private static boolean isOperator(Token token)
     {
-        return token.getTipo().equals("SOMA") ||
-            token.getTipo().equals("SUB") ||
-            token.getTipo().equals("MULT") ||
-            token.getTipo().equals("DIV") ||
-            token.getTipo().equals("IGUAL") ||
-            token.getTipo().equals("MENOR") ||
-            token.getTipo().equals("MAIOR") ||
-            token.getTipo().equals("MENOR_IGUAL") ||
-            token.getTipo().equals("MAIOR_IGUAL") ||
-            token.getTipo().equals("AND") ||
-            token.getTipo().equals("OR");
+        return token.getType().equals("SOMA") ||
+            token.getType().equals("SUB") ||
+            token.getType().equals("MULT") ||
+            token.getType().equals("DIV") ||
+            token.getType().equals("IGUAL") ||
+            token.getType().equals("MENOR") ||
+            token.getType().equals("MAIOR") ||
+            token.getType().equals("MENOR_IGUAL") ||
+            token.getType().equals("MAIOR_IGUAL") ||
+            token.getType().equals("AND") ||
+            token.getType().equals("OR");
     }
 }

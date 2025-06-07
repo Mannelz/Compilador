@@ -101,7 +101,7 @@ public class Lexical
 
                     if(symbolsTable.contains(composed))
                     {
-                        token = Token.createToken(symbolsTable.getSymbol(composed));
+                        token = Token.createToken(symbolsTable.getSymbol(composed), line, column);
                         tokens.addToken(token);
                     }
                     else
@@ -112,7 +112,7 @@ public class Lexical
 
                         if(symbolsTable.contains(simple))
                         {
-                            token = Token.createToken(symbolsTable.getSymbol(simple));
+                            token = Token.createToken(symbolsTable.getSymbol(simple), line, column);
                             tokens.addToken(token);
                         }
                         else
@@ -149,7 +149,7 @@ public class Lexical
                     if(!symbolsTable.contains(lexeme))
                         symbolsTable.addSymbol(symbol);
 
-                    token = Token.createToken(symbol);
+                    token = Token.createToken(symbol, line, column);
                     tokens.addToken(token);
 
                     lexeme = "";
@@ -167,13 +167,13 @@ public class Lexical
                     {
                         if(symbolsTable.contains(lexeme))
                         {
-                            token = Token.createToken(symbolsTable.getSymbol(lexeme));
+                            token = Token.createToken(symbolsTable.getSymbol(lexeme), line, column);
                             tokens.addToken(token);
                         }
                         else if(lexeme.matches("\\d+"))
                         {
                             symbol = new Symbol("CONTS", "2", lexeme);
-                            token = Token.createToken(symbol);
+                            token = Token.createToken(symbol, line, column);
 
                             symbolsTable.addSymbol(symbol);
                             tokens.addToken(token);
@@ -186,7 +186,7 @@ public class Lexical
                             }
 
                             symbol = new Symbol("ID", "1", lexeme);
-                            token = Token.createToken(symbol);
+                            token = Token.createToken(symbol, line, column);
 
                             symbolsTable.addSymbol(symbol);
                             tokens.addToken(token);
