@@ -9,9 +9,9 @@ public class Token
         this.valor = valor;
     }
 
-    public static Token createToken(Simbolo symbol)
+    public static Token createToken(Symbol symbol)
     {
-        return new Token(symbol.getNome(), symbol.getLexema());
+        return new Token(symbol.getName(), symbol.getLexeme());
     }
 
     public String getTipo()

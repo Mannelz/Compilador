@@ -2,7 +2,7 @@ public class Sintatical
 {
     static SymbolTable symbolsTable = SymbolTable.getInstance();
     static TokenList tokens = TokenList.getInstance();
-    static Simbolo symbol;
+    static Symbol symbol;
     static Token token;
 
     public static void analysis()
