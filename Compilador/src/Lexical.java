@@ -7,7 +7,7 @@ public class Lexical
     {
         SymbolTable symbolsTable = SymbolTable.getInstance();
         TokenList tokens = TokenList.getInstance();
-        Simbolo symbol;
+        Symbol symbol;
         Token token;
 
         int line = 1;
@@ -144,7 +144,7 @@ public class Lexical
 
                     lexeme = lexeme.substring(1, lexeme.length() - 1);
 
-                    symbol = new Simbolo("CONTS", "2", lexeme);
+                    symbol = new Symbol("CONTS", "2", lexeme);
 
                     if(!symbolsTable.contains(lexeme))
                         symbolsTable.addSymbol(symbol);
@@ -172,7 +172,7 @@ public class Lexical
                         }
                         else if(lexeme.matches("\\d+"))
                         {
-                            symbol = new Simbolo("CONTS", "2", lexeme);
+                            symbol = new Symbol("CONTS", "2", lexeme);
                             token = Token.createToken(symbol);
 
                             symbolsTable.addSymbol(symbol);
@@ -185,7 +185,7 @@ public class Lexical
                                 WizardSpeller.castWarning("Identificador inválido ou mal formado: " + lexeme, line, column);
                             }
 
-                            symbol = new Simbolo("ID", "1", lexeme);
+                            symbol = new Symbol("ID", "1", lexeme);
                             token = Token.createToken(symbol);
 
                             symbolsTable.addSymbol(symbol);
