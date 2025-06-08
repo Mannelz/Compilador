@@ -35,6 +35,10 @@ public class Sintatical
             {
                 loop();
             }
+            else if(token.getType().equals("IF"))
+            {
+                conditional();
+            }
             else if(token.getType().equals("BEGIN"))
             {
                 block();
@@ -209,11 +213,49 @@ public class Sintatical
         block();
     }
 
+    private static void conditional()
+    {
+        token = tokens.getToken();
+
+        expression();
+
+        if(!token.getType().equals("BEGIN"))
+        {
+            WizardSpeller.castError("Esperado 'begin' após a condição do if.", token.getLine(), token.getColumn());
+        }
+
+        block();
+
+        token = tokens.peekToken();
+
+        if(token.getType().equals("ELSE"))
+        {
+            token = tokens.getToken();
+
+            token = tokens.peekToken();
+    
+            if(token.getType().equals("IF"))
+            {
+                token = tokens.getToken();
+                conditional();
+            }
+            else if(token.getType().equals("BEGIN"))
+            {
+                token = tokens.getToken();
+                block();
+            }
+            else
+            {
+                WizardSpeller.castError("Esperado 'if' ou 'begin' após 'else'.", token.getLine(), token.getColumn());
+            }
+        }
+    }
+
     private static void block()
     {
         token = tokens.getToken();
 
-        while(!token.getType().equals("END") && !tokens.isEmpty())
+        while(!token.getType().equals("END"))
         {
             switch (token.getType())
             {
@@ -236,6 +278,9 @@ public class Sintatical
                     break;
                 case "WHILE":
                     loop();
+                    break;
+                case "IF":
+                    conditional();
                     break;
                 case "BEGIN":
                     block();
