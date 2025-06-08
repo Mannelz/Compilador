@@ -41,7 +41,7 @@ public class Sintatical
             }
             else
             {
-                WizardSpeller.castError("Não foi possível encontrar nenhum token válido.", 1, 1);
+                WizardSpeller.castError("Não foi possível encontrar nenhum token válido.", token.getLine(), token.getColumn());
             }
         }
     }
@@ -62,12 +62,12 @@ public class Sintatical
             }
             else
             {
-                WizardSpeller.castError("Esperado ';' após a expressão.", 1 ,1);
+                WizardSpeller.castError("Esperado ';' após a expressão.", token.getLine(), token.getColumn());
             }
         }
         else
         {
-            WizardSpeller.castError("Esperado '=' após identificador.", 1 ,1);
+            WizardSpeller.castError("Esperado '=' após identificador.", token.getLine(), token.getColumn());
         }
     }
 
@@ -95,17 +95,17 @@ public class Sintatical
                 }
                 else
                 {
-                    WizardSpeller.castError("Esperado ';' após a expressão de inicialização.", 1 ,1);
+                    WizardSpeller.castError("Esperado ';' após a expressão de inicialização.", token.getLine(), token.getColumn());
                 }
             }
             else
             {
-                WizardSpeller.castError("Esperado '=' para inicialização ou ';' para fim da declaração.", 1 ,1);
+                WizardSpeller.castError("Esperado '=' para inicialização ou ';' para fim da declaração.", token.getLine(), token.getColumn());
             }
         }
         else
         {
-            WizardSpeller.castError("Esperado identificador após o tipo.", 1 ,1);
+            WizardSpeller.castError("Esperado identificador após o tipo.", token.getLine(), token.getColumn());
         }
     }
 
@@ -127,17 +127,17 @@ public class Sintatical
                 }
                 else
                 {
-                    WizardSpeller.castError("Esperado ';' após o identificador em readln.", 1 ,1);
+                    WizardSpeller.castError("Esperado ';' após o identificador em readln.", token.getLine(), token.getColumn());
                 }
             }
             else
             {
-                WizardSpeller.castError("Esperado identificador após ',' em readln.", 1 ,1);
+                WizardSpeller.castError("Esperado identificador após ',' em readln.", token.getLine(), token.getColumn());
             }
         }
         else
         {
-            WizardSpeller.castError("Esperado ',' após 'readln'.", 1 ,1);
+            WizardSpeller.castError("Esperado ',' após 'readln'.", token.getLine(), token.getColumn());
         }
     }
 
@@ -171,27 +171,27 @@ public class Sintatical
                         }
                         else
                         {
-                            WizardSpeller.castError("Esperado ';' após o identificador em writeln.", 1 ,1);
+                            WizardSpeller.castError("Esperado ';' após o identificador em writeln.", token.getLine(), token.getColumn());
                         }
                     }
                     else
                     {
-                        WizardSpeller.castError("Esperado identificador após ',' em writeln.", 1 ,1);
+                        WizardSpeller.castError("Esperado identificador após ',' em writeln.", token.getLine(), token.getColumn());
                     }
                 }
                 else
                 {
-                    WizardSpeller.castError("Esperado ';' ou ',' após a constante em writeln.", 1 ,1);
+                    WizardSpeller.castError("Esperado ';' ou ',' após a constante em writeln.", token.getLine(), token.getColumn());
                 }
             }
             else
             {
-                WizardSpeller.castError("Esperado uma constante após ',' em write/writeln.", 1 ,1);
+                WizardSpeller.castError("Esperado uma constante após ',' em write/writeln.", token.getLine(), token.getColumn());
             }
         }
         else
         {
-            WizardSpeller.castError("Esperado ',' após 'write'/'writeln'.", 1 ,1);
+            WizardSpeller.castError("Esperado ',' após 'write'/'writeln'.", token.getLine(), token.getColumn());
         }
     }
 
@@ -203,7 +203,7 @@ public class Sintatical
 
         if(!token.getType().equals("BEGIN"))
         {
-            WizardSpeller.castError("Esperado 'begin' após a condição do while.", 1, 1);
+            WizardSpeller.castError("Esperado 'begin' após a condição do while.", token.getLine(), token.getColumn());
         }
         
         block();
@@ -213,7 +213,7 @@ public class Sintatical
     {
         token = tokens.getToken();
 
-        while(!token.getType().equals("END"))
+        while(!token.getType().equals("END") && !tokens.isEmpty())
         {
             switch (token.getType())
             {
@@ -241,7 +241,7 @@ public class Sintatical
                     block();
                     break;
                 default:
-                    WizardSpeller.castError("Comando inválido dentro de bloco.", 1, 1);
+                    WizardSpeller.castError("Comando inválido dentro de bloco.", token.getLine(), token.getColumn());
             }
 
             token = tokens.getToken();
@@ -259,11 +259,12 @@ public class Sintatical
         if(isOperate(token))
         {
             token = tokens.getToken(); // consome operando
-        } 
+        }
         else if(token.getType().equals("ABRE_PAR"))
         {
             token = tokens.getToken(); // consome '('
-            expression(); // expressão dentro do parêntese
+
+            expression(); // expressão  dentro do parêntese
 
             if(token.getType().equals("FECHA_PAR"))
             {
@@ -271,7 +272,7 @@ public class Sintatical
             }
             else
             {
-                WizardSpeller.castError("Esperado ')'.", 1, 1);
+                WizardSpeller.castError("Esperado ')'.", token.getLine(), token.getColumn());
             }
         }
         else if(token.getType().equals("NOT"))
@@ -281,7 +282,7 @@ public class Sintatical
         }
         else
         {
-            WizardSpeller.castError("Operando (ID, CONST) inválido na expressão.", 1, 1);
+            WizardSpeller.castError("Operando (ID, CONST) inválido na expressão.", token.getLine(), token.getColumn());
         }
 
         // Enquanto houver operadores, continue processando a expressão
@@ -304,12 +305,12 @@ public class Sintatical
                 }
                 else
                 {
-                    WizardSpeller.castError("Esperado ')'.", 1, 1);
+                    WizardSpeller.castError("Esperado ')'.", token.getLine(), token.getColumn());
                 }
             }
             else
             {
-                WizardSpeller.castError("Esperado operando (ID, CONST) após operador (+, -, *, /, <, >, etc).", 1, 1);
+                WizardSpeller.castError("Esperado operando (ID, CONST) após operador (+, -, *, /, <, >, etc).", token.getLine(), token.getColumn());
             }
         }
     }

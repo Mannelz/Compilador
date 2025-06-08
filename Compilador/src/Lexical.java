@@ -171,11 +171,11 @@ public class Lexical
                     continue;
                 }
                  
-                if(!Character.isWhitespace(currentByte))
+                if(Character.isLetterOrDigit(currentByte) || currentByte == '_')
                 {
                     lexeme += (char) currentByte;
                 }
-                else
+                else if(Character.isWhitespace(currentByte))
                 {
                     if(!lexeme.isEmpty())
                     {
@@ -186,6 +186,11 @@ public class Lexical
                 // endregion
             }
             while(currentByte != -1);
+
+            if(!lexeme.isEmpty())
+            {
+                processLexeme(lexeme);
+            }
 
             if(isComment)
             {

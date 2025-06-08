@@ -5,5 +5,6 @@ public class Main
         String filePath = "codigo_fonte.lc";
         
         Lexical.analysis(filePath);
+        Sintatical.analysis();
     }
 }
