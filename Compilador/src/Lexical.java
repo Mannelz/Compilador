@@ -158,7 +158,7 @@ public class Lexical
 
                     lexeme = lexeme.substring(1, lexeme.length() - 1);
 
-                    symbol = new Symbol("CONST", "2", lexeme);
+                    symbol = new Symbol("CONST", "2", lexeme, 2, 4);
 
                     if(!symbolsTable.contains(lexeme))
                         symbolsTable.addSymbol(symbol);
@@ -216,7 +216,7 @@ public class Lexical
         }
         else if(lexeme.matches("[a-zA-Z_][a-zA-Z0-9]*"))
         {
-            symbol = new Symbol("ID", "1", lexeme);
+            symbol = new Symbol("ID", "1", lexeme, 1);
             token = Token.createToken(symbol, line, column);
 
             symbolsTable.addSymbol(symbol);
@@ -224,7 +224,15 @@ public class Lexical
         }
         else if(lexeme.matches("\\d+"))
         {
-            symbol = new Symbol("CONST", "2", lexeme);
+            symbol = new Symbol("CONST", "2", lexeme, 2, 1);
+            token = Token.createToken(symbol, line, column);
+
+            symbolsTable.addSymbol(symbol);
+            tokens.addToken(token);
+        }
+        else if(lexeme.matches("^0h[A-F0-9]{2}"))
+        {
+            symbol = new Symbol("CONST", "2", lexeme, 2, 3);
             token = Token.createToken(symbol, line, column);
 
             symbolsTable.addSymbol(symbol);
