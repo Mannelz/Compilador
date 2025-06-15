@@ -3,21 +3,21 @@ class Symbol
     private String name;
     private String token;
     private String lexeme;
-    private int symbolClass;
-    private int symbolType;
+    private SymbolClass symbolClass;
+    private SymbolType symbolType;
     private String address;
 
-    Symbol(String name, String token, String lexeme, int symbolClass)
+    Symbol(String name, String token, String lexeme, SymbolClass symbolClass)
     {
         this.name = name;
         this.token = token;
         this.lexeme = lexeme;
         this.symbolClass = symbolClass;
-        this.symbolType = -1;
+        this.symbolType = null;
         this.address = "";
     }
 
-    Symbol(String name, String token, String lexeme, int symbolClass, int symbolType)
+    Symbol(String name, String token, String lexeme, SymbolClass symbolClass, SymbolType symbolType)
     {
         this.name = name;
         this.token = token;
@@ -42,12 +42,12 @@ class Symbol
         return lexeme;
     }
 
-    public int getSymbolClass()
+    public SymbolClass getSymbolClass()
     {
         return symbolClass;
     }
 
-    public int getSymbolType()
+    public SymbolType getSymbolType()
     {
         return symbolType;
     }
@@ -57,12 +57,12 @@ class Symbol
         return address;
     }
 
-    public void setSymbolClass(int symbolClass)
+    public void setSymbolClass(SymbolClass symbolClass)
     {
         this.symbolClass = symbolClass;
     }
 
-    public void setSymbolType(int symbolType)
+    public void setSymbolType(SymbolType symbolType)
     {
         this.symbolType = symbolType;
     }
