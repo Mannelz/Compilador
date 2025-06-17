@@ -1,19 +1,32 @@
 public enum SymbolType 
 {
-    INT(1),
-    LOGICAL(2),
-    BYTE(3),
-    STRING(4);
+    INT("INT"),
+    LOGICAL("LOGICAL"),
+    BYTE("BYTE"),
+    STRING("STRING");
 
-    private final int value;
+    private final String value;
 
-    SymbolType(int value)
+    SymbolType(String value)
     {
         this.value = value;
     }
 
-    public int getValue()
+    public String getValue()
     {
         return value;
+    }
+
+    public static SymbolType fromString(String text)
+    {
+        for(SymbolType type : SymbolType.values())
+        {
+            if(type.getValue().equalsIgnoreCase(text))
+            {
+                return type;
+            }
+        }
+        
+        throw new IllegalArgumentException("Tipo inválido: " + text);
     }
 }

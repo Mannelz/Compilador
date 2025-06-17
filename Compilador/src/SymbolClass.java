@@ -1,18 +1,31 @@
 public enum SymbolClass 
 {
-    EMPTY(0),
-    VARIABLE(1),
-    CONSTANT(2);
+    EMPTY("EMPTY"),
+    VARIABLE("VARIABLE"),
+    CONSTANT("CONSTANT");
 
-    private final int value;
+    private final String value;
 
-    SymbolClass(int value)
+    SymbolClass(String value)
     {
         this.value = value;
     }
 
-    public int getValue()
+    public String getValue()
     {
         return value;
+    }
+
+    public static SymbolClass fromString(String text)
+    {
+        for(SymbolClass sClass : SymbolClass.values())
+        {
+            if(sClass.getValue().equalsIgnoreCase(text))
+            {
+                return sClass;
+            }
+        }
+        
+        throw new IllegalArgumentException("Tipo inválido: " + text);
     }
 }
