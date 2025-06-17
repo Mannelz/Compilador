@@ -2,8 +2,10 @@ public class Sintatical
 {
     static SymbolTable symbolsTable = SymbolTable.getInstance();
     static TokenList tokens = TokenList.getInstance();
-    static Symbol symbol;
     static Token token;
+    
+    static Semantical semantical = new Semantical(symbolsTable);
+    static String lastExpressionType;   
 
     public static void analysis()
     {
@@ -17,11 +19,11 @@ public class Sintatical
 
             if(token.getType().equals("ID"))
             {
-                assignment();
+                assignment(token);
             }
             else if(isDeclaration)
             {
-                declaration();
+                declaration(token.getType());
             }
             else if(token.getType().equals("READLN"))
             {
@@ -50,7 +52,7 @@ public class Sintatical
         }
     }
 
-    private static void assignment()
+    private static void assignment(Token idToken)
     {
         token = tokens.getToken();
 
@@ -62,7 +64,12 @@ public class Sintatical
 
             if(token.getType().equals("PONTO_VIRG"))
             {
-                // Análise semântica aqui.
+                Symbol idSymbol = symbolsTable.getSymbol(idToken.getValue());
+
+                if(!semantical.checkTypeCompatibility(idSymbol.getSymbolType().toString(), lastExpressionType))
+                {
+                    WizardSpeller.castError("Incompatibilidade de tipo na atribuição da variável '" + idSymbol.getLexeme() + "'. Esperado: " + idSymbol.getSymbolType() + ", Encontrado: " + lastExpressionType + ".", idToken.getLine(), idToken.getColumn());
+                }
             }
             else
             {
@@ -75,17 +82,26 @@ public class Sintatical
         }
     }
 
-    private static void declaration()
+    private static void declaration(String declarationType)
     {
+        boolean isFinal = declarationType.equals("FINAL");
+
         token = tokens.getToken();
 
         if(token.getType().equals("ID"))
         {
+            Token idToken = token;
+
             token = tokens.getToken();
 
             if(token.getType().equals("PONTO_VIRG"))
             {
-                // Análise semântica aqui.
+                if(isFinal)
+                {
+                    WizardSpeller.castError("Declarações do tipo 'FINAL' devem ser inicializadas.", token.getLine(), token.getColumn());
+                }
+
+                semantical.setType(idToken, declarationType);
             }
             else if(token.getType().equals("ATRIB"))
             {
@@ -95,7 +111,14 @@ public class Sintatical
 
                 if(token.getType().equals("PONTO_VIRG"))
                 {
-                    // Análise semântica aqui.
+                    if(isFinal)
+                    {
+                        semantical.setType(idToken, lastExpressionType);
+                    }
+                    else if(!semantical.setType(token, declarationType, lastExpressionType))
+                    {
+                        WizardSpeller.castError("Incompatibilidade de tipo na inicialização da variável '" + idToken.getValue() + "'. Esperado: " + declarationType + ", Encontrado: " + lastExpressionType + ".", idToken.getLine(), idToken.getColumn());
+                    }
                 }
                 else
                 {
@@ -127,7 +150,9 @@ public class Sintatical
 
                 if(token.getType().equals("PONTO_VIRG"))
                 {
-                    // Análise semântica aqui.
+                    // Análise semântica aqui
+
+                    // TODO VERIFICAR SE O ID NÃO É BOOLEAN
                 }
                 else
                 {
@@ -145,6 +170,7 @@ public class Sintatical
         }
     }
 
+    // TODO MUDAR O WRITE
     private static void write()
     {
         token = tokens.getToken();
@@ -205,6 +231,11 @@ public class Sintatical
 
         expression();
 
+        if(!lastExpressionType.equals("BOOLEAN"))
+        {
+            WizardSpeller.castError("Condição do 'while' deve ser uma expressão lógica (BOOLEAN). Encontrado: " + lastExpressionType + ".", token.getLine(), token.getColumn());
+        }
+
         if(!token.getType().equals("BEGIN"))
         {
             WizardSpeller.castError("Esperado 'begin' após a condição do while.", token.getLine(), token.getColumn());
@@ -218,6 +249,11 @@ public class Sintatical
         token = tokens.getToken();
 
         expression();
+
+        if(!lastExpressionType.equals("BOOLEAN"))
+        {
+            WizardSpeller.castError("Condição do 'if' deve ser uma expressão lógica (BOOLEAN). Encontrado: " + lastExpressionType + ".", token.getLine(), token.getColumn());
+        }
 
         if(!token.getType().equals("BEGIN"))
         {
@@ -257,17 +293,17 @@ public class Sintatical
 
         while(!token.getType().equals("END"))
         {
-            switch (token.getType())
+            switch(token.getType())
             {
                 case "ID":
-                    assignment();
+                    assignment(token);
                     break;
                 case "FINAL":
                 case "INT":
                 case "BYTE":
                 case "STRING":
                 case "BOOLEAN":
-                    declaration();
+                    declaration(token.getType());
                     break;
                 case "READLN":
                     read();
@@ -300,16 +336,28 @@ public class Sintatical
 
     public static void expression()
     {
+        String currentExpressionAggregateType = "UNKNOWN";
+
         // Primeiro operando
         if(isOperate(token))
         {
+            if(token.getType().equals("ID"))
+            {
+                Symbol symbol = symbolsTable.getSymbol(token.getValue());
+                currentExpressionAggregateType = symbol.getSymbolType().toString();
+            }
+            else
+            {
+                currentExpressionAggregateType = semantical.getLiteralType(token);
+            }
+
             token = tokens.getToken(); // consome operando
         }
         else if(token.getType().equals("ABRE_PAR"))
         {
             token = tokens.getToken(); // consome '('
-
             expression(); // expressão  dentro do parêntese
+            currentExpressionAggregateType = lastExpressionType;
 
             if(token.getType().equals("FECHA_PAR"))
             {
@@ -317,13 +365,20 @@ public class Sintatical
             }
             else
             {
-                WizardSpeller.castError("Esperado ')'.", token.getLine(), token.getColumn());
+                WizardSpeller.castError("Esperado ')' para fechar expressão..", token.getLine(), token.getColumn());
             }
         }
         else if(token.getType().equals("NOT"))
         {
             token = tokens.getToken(); // consome 'not'
             expression(); // negação de expressão
+
+            if(!lastExpressionType.equals("BOOLEAN") && !lastExpressionType.equals("UNKNOWN"))
+            {
+                WizardSpeller.castError("Operando do 'NOT' deve ser booleano. Encontrado: " + lastExpressionType + ".", token.getLine(), token.getColumn());
+            }
+
+            currentExpressionAggregateType = "BOOLEAN";
         }
         else
         {
@@ -333,16 +388,31 @@ public class Sintatical
         // Enquanto houver operadores, continue processando a expressão
         while (isOperator(token))
         {
+            String operatorType = token.getType(); // Tipo do operador (SOMA, IGUAL, AND, etc.)
+            Token operatorToken = token;
+            String rightOperandType = "UNKNOWN";
+
             token = tokens.getToken(); // consome operador
 
             if(isOperate(token))
             {
+                if(token.getType().equals("ID"))
+                {
+                    Symbol symbol = symbolsTable.getSymbol(token.getValue());
+                    rightOperandType = symbol.getSymbolType().toString();
+                }
+                else
+                {
+                    rightOperandType = semantical.getLiteralType(token);
+                }
+
                 token = tokens.getToken(); // consome operando
             }
             else if(token.getType().equals("ABRE_PAR"))
             {
                 token = tokens.getToken(); // consome '('
                 expression(); // expressão entre parênteses
+                rightOperandType = lastExpressionType;
 
                 if(token.getType().equals("FECHA_PAR"))
                 {
@@ -350,14 +420,18 @@ public class Sintatical
                 }
                 else
                 {
-                    WizardSpeller.castError("Esperado ')'.", token.getLine(), token.getColumn());
+                    WizardSpeller.castError("Esperado ')' para fechar expressão.", token.getLine(), token.getColumn());
                 }
             }
             else
             {
                 WizardSpeller.castError("Esperado operando (ID, CONST) após operador (+, -, *, /, <, >, etc).", token.getLine(), token.getColumn());
             }
+
+            currentExpressionAggregateType = semantical.checkTypeOperator(operatorType, currentExpressionAggregateType, rightOperandType, operatorToken);
         }
+
+        lastExpressionType = currentExpressionAggregateType; 
     }
 
     private static boolean isOperate(Token token)
