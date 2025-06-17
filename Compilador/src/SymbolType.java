@@ -1,7 +1,7 @@
 public enum SymbolType 
 {
     INT("INT"),
-    LOGICAL("LOGICAL"),
+    BOOLEAN("BOOLEAN"),
     BYTE("BYTE"),
     STRING("STRING");
 

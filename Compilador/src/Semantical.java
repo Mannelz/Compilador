@@ -13,7 +13,7 @@ public class Semantical
         {
             case SymbolType.INT:
                 return "INT";
-            case SymbolType.LOGICAL: 
+            case SymbolType.BOOLEAN: 
                 return "BOOLEAN";
             case SymbolType.BYTE:
                 return "BYTE";
@@ -32,7 +32,7 @@ public class Semantical
         {
             case SymbolType.INT:
                 return "INT";
-            case SymbolType.LOGICAL: 
+            case SymbolType.BOOLEAN: 
                 return "BOOLEAN";
             case SymbolType.BYTE:
                 return "BYTE";

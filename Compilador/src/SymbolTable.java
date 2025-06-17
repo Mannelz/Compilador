@@ -51,8 +51,8 @@ public class SymbolTable
         addSymbol(new Symbol("READLN", "29", "readln", SymbolClass.EMPTY));
         addSymbol(new Symbol("WRITE", "30", "write", SymbolClass.EMPTY));
         addSymbol(new Symbol("WRITELN", "31", "writeln", SymbolClass.EMPTY));
-        addSymbol(new Symbol("TRUE", "32", "true", SymbolClass.EMPTY, SymbolType.LOGICAL));
-        addSymbol(new Symbol("FALSE", "33", "false", SymbolClass.EMPTY, SymbolType.LOGICAL));
+        addSymbol(new Symbol("TRUE", "32", "true", SymbolClass.EMPTY, SymbolType.BOOLEAN));
+        addSymbol(new Symbol("FALSE", "33", "false", SymbolClass.EMPTY, SymbolType.BOOLEAN));
         addSymbol(new Symbol("BOOLEAN", "34", "boolean", SymbolClass.EMPTY));
     }
 
